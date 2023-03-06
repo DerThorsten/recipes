@@ -1,14 +1,13 @@
 context:
-  version: 0.17.0
+  version: 0.18.2
   name: pyjs
 package:
   name: '{{name}}'
   version: '{{ version }}'
-  
-source:
-  url: https://github.com/emscripten-forge/{{name}}/archive/refs/tags/{{version}}.tar.gz
-  sha256: 8188580ad2a6e590c3102582626db34243366707ae122acbbd4f345c3c5ce046
 
+source:
+  - url: https://github.com/emscripten-forge/{{name}}/archive/refs/tags/{{version}}.tar.gz
+    sha256: 02948ce462151fd3c25ffc471cb553fca5755ad2fb99a46ff1f1de717b19c2c4
 build:
   number: 0
 
@@ -17,6 +16,7 @@ requirements:
     - '{{ compiler("cxx") }}'
     - cmake
     - ninja
+    - python
   host:
     - python
     - sqlite
@@ -36,4 +36,3 @@ about:
 extra:
   recipe-maintainers:
     - DerThorsten
-

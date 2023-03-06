@@ -6,7 +6,6 @@ package:
   version: '{{ version }}'
 
 source:
-  - path: ./wasm-driver.cpp
   - url: https://github.com/apache/arrow/archive/refs/tags/apache-arrow-{{version}}.dev.tar.gz
     sha256: 5581107cb445a4f0b316d57c3073c034857d633eb33b73a63ca71a34c3ab4caf
     patches:
@@ -14,7 +13,7 @@ source:
       - patches/patch_libraries_search_prefix.patch
 
 build:
-  number: 0
+  number: 1
 
 requirements:
   build:
