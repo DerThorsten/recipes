@@ -47,10 +47,10 @@ git clone --depth 1 https://github.com/hoodmane/instant.git --branch emscripten-
 
 
 
-${PYTHON} -m pip install . || true
+${PYTHON} -m pip install .  #|| true
 
-echo "COPY"
+# echo "COPY"
 
-cp src/rust/target/wasm32-unknown-emscripten/release/cryptography_rust.wasm src/rust/target/wasm32-unknown-emscripten/release/cryptography_rust.so
+# cp src/rust/target/wasm32-unknown-emscripten/release/cryptography_rust.wasm src/rust/target/wasm32-unknown-emscripten/release/cryptography_rust.so
 
-${PYTHON} -m pip install .
+# ${PYTHON} -m pip install .
