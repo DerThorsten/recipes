@@ -1,0 +1,37 @@
+context:
+  name: "cryptography"
+  version: "38.0.4"
+
+package:
+  name: "{{ name }}"
+  version: "{{ version }}"
+
+source:
+  url: https://files.pythonhosted.org/packages/e3/3f/41186b1f2fd86a542d399175f6b8e43f82cd4dfa51235a0b030a042b811a/cryptography-38.0.4.tar.gz
+  sha256: 175c1a818b87c9ac80bb7377f5520b7f31b3ef2a0004e2420319beadedb67290
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - "{{ compiler('cxx') }}"
+    - cmake
+    - python
+    - cross-python_emscripten-32
+    - setuptools-rust
+    - cffi
+    - pip
+  host:
+    - openssl
+    - cffi
+    - python
+  run:
+    - numpy
+
+about:
+  home: TODO
+
+extra:
+  recipe-maintainers:
+    - DerThorsten
