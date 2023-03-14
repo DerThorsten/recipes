@@ -10,6 +10,9 @@ export CARGO_TARGET_WASM32_UNKNOWN_EMSCRIPTEN_LINKER=emcc
 export RUST_TOOLCHAIN=nightly-2022-06-26
 
 
+
+
+
 export PYO3_CROSS_LIB_DIR=${PREFIX}/lib
 export PYO3_CROSS_INCLUDE_DIR=${PREFIX}/include
 
@@ -27,16 +30,21 @@ export RUSTFLAGS="-C link-arg=-sSIDE_MODULE=2 -C link-arg=-sWASM_BIGINT -Z link-
 rustup default nightly
 
 
-# add BUILD_PREFIX/include for f2c.h file
 export CFLAGS="$CFLAGS -I$BUILD_PREFIX/include  -Wno-implicit-function-declaration"
 export LDFLAGS="$LDFLAGS --no-entry -Wl"
 
 export OPENSSL_INCLUDE_PATH=$PREFIX/include
-export OPENSSL_LIBRARY_PATH=$PREFIX/lib
-rustup toolchain install ${RUST_TOOLCHAIN} && rustup default ${RUST_TOOLCHAIN}
-rustup target add wasm32-unknown-emscripten --toolchain ${RUST_TOOLCHAIN}
-# TODO: remove this when instant makes a release
+export OPENSSL_LIBRARY_PATH=$PREFIX/lib/libssl.a
+
+source $HOME/.cargo/env && rustup toolchain install $RUST_TOOLCHAIN && rustup default $RUST_TOOLCHAIN
+source $HOME/.cargo/env && rustup target add wasm32-unknown-emscripten --toolchain $RUST_TOOLCHAIN
+
+# # rustup toolchain install ${RUST_TOOLCHAIN} && rustup default ${RUST_TOOLCHAIN}
+# # rustup target add wasm32-unknown-emscripten --toolchain ${RUST_TOOLCHAIN}
+# # TODO: remove this when instant makes a release
 git clone --depth 1 https://github.com/hoodmane/instant.git --branch emscripten-no-leading-underscore
+
+
 
 
 ${PYTHON} -m pip install . || true
