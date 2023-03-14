@@ -1,10 +1,15 @@
 #  Emscripten forge
 
+[![build all](https://github.com/emscripten-forge/recipes/actions/workflows/build_all.yaml/badge.svg?branch=main)](https://github.com/emscripten-forge/recipes/actions/workflows/build_all.yaml)
+
 Build wasm/emscripten packages with conda/mamba/boa.
 This repository consists of recipes for conda packages for emscripten.
 Most of the recipes have been ported from [pyodide](https://pyodide.org/en/stable/).
 
 While we already have a lot of packages built, this is still a big work in progress.
+
+> **Note**
+> The recipes used in this repository follow the [Boa recipe specification](https://boa-build.readthedocs.io/en/latest/recipe_spec.html).
 
 ## Installing Packages
 

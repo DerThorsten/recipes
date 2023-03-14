@@ -60,19 +60,22 @@ if [[ $target_platform == "emscripten-32" ]]; then
 
     emmake make CROSS_COMPILE=yes -j8
 
-
-
-
+    # replace:
+    #  "some/long/path/containing_the_build_dir/emcc"  with "emcc"
+    #  "some/long/path/containing_the_build_dir/emar"  with "emar"
+    #  "some/long/path/containing_the_build_dir/em++"  with "em++"
+    FNAME_IN="build/lib.emscripten-3.10/$SYSCONFIG_NAME.py" 
+    FNAME_OUT="build/lib.emscripten-3.10/$SYSCONFIG_NAME.py"
+    $PYTHON $RECIPE_DIR/patch_sysconfigdata.py \
+        --fname-in $FNAME_IN \
+        --fname-out $FNAME_OUT \
+        
     cp build/lib.emscripten-3.10/$SYSCONFIG_NAME.py ${PREFIX}/lib/python3.10/ 
-
-
-
 
     # CHANGE PLATTFORM TRIPLET IN SYSCONFIG
     sed -i "s/-lffi -lz/ /g"    ${PREFIX}/lib/python3.10/$SYSCONFIG_NAME.py
     # sed -i "s/'SHLIB_SUFFIX': '.so',/'SHLIB_SUFFIX': '.cpython-310-wasm32-emscripten.so',/g"  ${PREFIX}/lib/python3.10/_sysconfigdata__emscripten_.py
 
- 
     # install/copy sysconfig to a place where cross-python expects the sysconfig
     mkdir -p ${PREFIX}/etc/conda
     cp ${PREFIX}/lib/python3.10/$SYSCONFIG_NAME.py ${PREFIX}/etc/conda/
@@ -98,6 +101,16 @@ if [[ $target_platform == "emscripten-32" ]]; then
     rm -rf ${PREFIX}/lib/python3.10/sqlite3/test
     rm -rf ${PREFIX}/lib/python3.10/unittest/tests
 
+    # remove broken links but keep python3.10 binary
+    # and the non-broken link to it
+    rm  ${PREFIX}/bin/2to3
+    rm  ${PREFIX}/bin/idle3
+    rm  ${PREFIX}/bin/pydoc3
+    rm  ${PREFIX}/bin/python3-config
+
+    # remove broken links
+    rm -rf ${PREFIX}/lib/pkgconfig 
+    
 else
     mkdir -p build
     pushd build
