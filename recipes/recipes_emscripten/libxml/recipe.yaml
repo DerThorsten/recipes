@@ -1,5 +1,5 @@
 context:
-  version: '2.9.14'
+  version: '2.11.0'
 
 
 package:
@@ -8,7 +8,7 @@ package:
 
 source:
   url: https://gitlab.gnome.org/GNOME/libxml2/-/archive/v{{ version }}/libxml2-v{{ version }}.tar.gz
-  sha256: 80efe9e6b48f8aa7b9b0c47be427e2ef2dbfb2999124220ffbc0f43ca6adb98c
+  sha256: 9e16fb3736865a2f9d227dbc625e65c8dcd69409ccc1ffadd0b30e2b5e7795d2
   patches:
     - 0004-CVE-2017-8872.patch
 
