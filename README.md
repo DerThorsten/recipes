@@ -38,7 +38,7 @@ Once the PR is merged, the package is built and uploaded to https://beta.mamba.p
 ## Local Builds
 Local builds are useful for testing new recipes or for debugging build issues but the setup is a bit more involved and this will only work for Linux and MacOS. Local builds on Windows are not yet supported.
 
- **1** create a new conda environment from `ci_env.yaml` and install playwright in this environment:
+ **1** Create a new conda environment from `ci_env.yaml` and install playwright in this environment:
  On a linux system this can be done with:
 ```bash
 micromamba create -n emscripten-forge -f ci_env.yaml --yes
@@ -61,10 +61,10 @@ Ie if you open a new terminal, you have to activate the environment again with `
  two arguments: the emsdk version and the path where emsdk should be installed.
  In this example we choose `~/emsdk` as the installation path. You have to use version `3.1.45`.
  ```bash
-./emsdk/setup_emsdk.sh 3.1.45 
+./emsdk/setup_emsdk.sh 3.1.45 ~/emsdk
 ```
 
-**3**  Install custom version of `boa`
+**3**  Install a custom version of `boa`
 ```bash
 python -m pip install git+https://github.com/DerThorsten/boa.git@python_api_v2   --no-deps --ignore-installed
 ```
@@ -77,14 +77,14 @@ channels:
   - conda-forge
 ```
 
-**5** Build a package (simple version):
+**5a** Build a package (simple version):
 To build a package, run this from the root of the repository (replace `regex` with the package you want to build)
 ```bash
 boa boa build --target=emscripten-wasm32 recipes/recipes_emscripten/regex
 ```
 This should work in principal, but will not run the python tests of the package.
 
-**6** Build a python package and run tests:
+**5b** Build a python package and run tests:
 For webassembly packages, we need to run the tests in a browser. This is done via playwright.
 We have a custom hacky script which builds the packages via boa and then runs the playwright tests.
 To build a package and run the tests, run this from the root of the repository (replace `regex` with the package you want to build) 
@@ -93,7 +93,7 @@ To build a package and run the tests, run this from the root of the repository (
 python builder.py build explicit recipes/recipes_emscripten/regex --emscripten-wasm32
 ```
 
-**7** Building multiple local packages which depend on each other:
+**6** Building multiple local packages which depend on each other:
 
 If you want to build multiple packages which depend on each other, you have to add the `local-channel` to your `.condarc` file. Since we are building from the `emscripten-forge` environment, we need to modify the `.condarc` file in the `emscripten-forge` environment. You have to add the the `conda-bld` dir
 of the `emscripten-forge` environment to the `.condarc` file. This is usually located in `~/micromamba/envs/emscripten-forge/conda-bld` on unix systems.
