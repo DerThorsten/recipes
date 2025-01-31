@@ -1,6 +1,7 @@
 from .rattler_build import build_with_rattler
 from .constants import RECIPES_SUBDIR_MAPPING, RECIPES_EMSCRIPTEN_DIR
 from .find_recipes_with_changes import find_recipes_with_changes
+from .compare_repodata import show_missing_packages
 
 import sys
 import os
@@ -85,6 +86,13 @@ def convert_pyodide_recipe(recipe_dir, output_dir):
     from .bot.recipes_from_pyodide import convert_pyodide_recipe
 
     convert_pyodide_recipe(recipe_dir, output_dir)
+
+@app.command()
+def show_missing_packages(old_path, new_path):
+    from .compare_repodata import show_missing_packages
+
+    show_missing_packages(old_path, new_path)
+
 
 if __name__ == "__main__":
     app()
