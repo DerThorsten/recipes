@@ -1,0 +1,42 @@
+context:
+  version: 7.8.1.1
+
+package:
+  name: pythonocc-core
+  version: ${{ version }}
+
+source:
+  # url: https://github.com/tpaviot/pythonocc-core/archive/${{ version }}.tar.gz
+  # sha256: f95f74f7fdf9d2eb1f1a5ff8e26d9f3a47c3ca190b8897f478e3562fcf13ef80
+  path: /Users/thorstenbeier/src/pythonocc-core
+build:
+  number: 0
+
+requirements:
+  build:
+  - "${{ compiler('cxx') }}"
+  - cross-python_emscripten-wasm32
+  - python
+  - swig
+  - pip
+  - numpy
+  - make
+  host:
+  - numpy
+  - python
+  - occt
+  run:
+  - occt
+  - numpy
+  - svgwrite
+
+tests:
+- script: pytester
+  files:
+    recipe:
+    - test_import.py
+  requirements:
+    build:
+    - pytester
+    run:
+    - pytester-run

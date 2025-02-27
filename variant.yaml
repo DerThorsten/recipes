@@ -323,7 +323,7 @@ flann:
 fmt:
   - '8'
 fontconfig:
-  - 2.13
+  - 2.15
 freetype:
   - 2
 gct:
@@ -530,13 +530,13 @@ ntl:
 numpy:
   - '2.2'
 occt:
-  - '7.5'
+  - '7.8'
 openblas:
   - 0.3.*
 openexr:
-  - 2.5
+  - 3.3
 openjpeg:
-  - '2.4'
+  - '2.5'
 openmpi:
   - 4
 openssl:
@@ -652,7 +652,7 @@ vlfeat:
 volk:
   - '2.5'
 vtk:
-  - 9.0.1
+  - 9.4.1
 x264:
   - '1!161.*'
 xerces_c:

@@ -1,0 +1,67 @@
+context:
+  version: 3.19.10
+  name: freeimage
+
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  - url: https://github.com/danoli3/FreeImage/archive/refs/tags/3.19.10.tar.gz
+    sha256: 7dd22eeb95e967e541d864da8b3bc03e3050983f2de2cb1c09a60d28e679c6f2
+    patches:
+      # - fix_beta.patch        # [ppc64le]
+      # - fix_libraw_0_20.patch
+      # https://github.com/LibRaw/LibRaw/blob/0.21.1/Changelog.txt#L191
+      # - fix_libraw_0_21.patch
+      # https://gitlab.com/libtiff/libtiff/-/commit/11f3f279608ae9e68f014717393197f430f9be58
+      # - libtiff44.patch
+      # Applied in build script
+      # - patches/Use-system-libs.patch
+      # - patches/Fix-compatibility-with-system-libpng.patch
+      # - patches/CVE-2019-12211-13.patch
+      # https://src.fedoraproject.org/rpms/freeimage/blob/rawhide/f/freeimage-openexr3.patch
+      # - patches/freeimage-openexr3.patch
+      # https://github.com/microsoft/vcpkg/pull/26007
+      # - patches/remove_auto_ptr.patch
+build:
+  number: 0
+
+requirements:
+  build:
+    - ${{ compiler("c") }}
+    - ${{ compiler("cxx") }}
+    - cmake
+    - pkg-config
+    - make 
+    - dos2unix
+  host:
+    - libjpeg-turbo
+    - openjpeg
+    - jxrlib
+    - libtiff
+    - imath
+    - openexr
+    - libpng
+    - zlib
+    - libraw
+    - libwebp
+    
+
+
+
+about:
+  homepage: http://freeimage.sourceforge.net/
+  license: GPL-2.0-or-later OR GPL-3.0-or-later OR FreeImage
+  license_file:
+      - license-fi.txt
+      - license-gplv2.txt
+      - license-gplv3.txt
+  summary: Helps provide support for many common image formats (PNG, JPEG, TIFF, BMP and others).
+
+
+extra:
+  recipe-maintainers:
+  - DerThorsten
+
