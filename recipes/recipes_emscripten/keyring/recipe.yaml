@@ -1,0 +1,50 @@
+context:
+  name: keyring
+  version: 25.7.0
+source:
+  - url: https://pypi.org/packages/source/k/keyring/keyring-${{ version }}.tar.gz
+    sha256: fe01bd85eb3f8fb3dd0405defdeac9a5b4f6f0439edbb3149577f244a2e8245b
+
+build:
+  number: 5
+  files:
+    exclude:
+    - '**/test_*.py'
+  script:
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+outputs:
+- package:
+    name: keyring
+    version: ${{ version }}
+  build:
+    noarch: python
+  requirements:
+    build:
+    - cross-python_${{ target_platform }}
+    - setuptools
+    host:
+    - python
+    run:
+    - importlib-metadata >=4.11.4
+    - jaraco.classes
+    - importlib_resources
+    - jaraco.functools
+    - jaraco.context
+  tests:
+  - script: pytester
+    files:
+      recipe:
+      - test_keyring.py
+    requirements:
+      build:
+      - pytester
+      run:
+      - pytester-run
+
+about:
+  homepage:  https://github.com/jaraco/keyring
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Store and access your passwords safely. Cross-platform and Pythonic.
