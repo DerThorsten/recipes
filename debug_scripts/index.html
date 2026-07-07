@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Emscripten R Runner</title>
+	<style>
+		body { font-family: system-ui, sans-serif; margin: 16px; }
+		#output {
+			white-space: pre-wrap;
+			background: #111;
+			color: #0f0;
+			padding: 12px;
+			border-radius: 8px;
+			min-height: 220px;
+		}
+		#status { margin-bottom: 8px; }
+	</style>
+</head>
+<body>
+	<h1>R (Emscripten)</h1>
+	<div id="status">Loading...</div>
+	<pre id="output"></pre>
+    
+	<script>
+        const output = document.getElementById('output');
+		const statusEl = document.getElementById('status');
+        
+		window.Module = {
+            noInitialRun: true,
+            preRun: [() => {
+                
+                Module.ENV.R_HOME = '/R';
+			}],
+			print: (text) => {
+                output.textContent += text + '\n';
+			},
+			printErr: (text) => {
+                output.textContent += '[err] ' + text + '\n';
+			},
+			setStatus: (text) => {
+                statusEl.textContent = text;
+			},
+			locateFile: (path) => {
+                if (path.endsWith('.wasm')) return 'R.wasm';
+				return path;
+			},
+			onRuntimeInitialized: () => {
+                statusEl.textContent = 'Runtime initialized';
+				// Example: run a simple command if main is exposed.
+                main();
+				
+			}
+		};
+        </script>
+
+    <script src="main.js"></script> 
+	<!-- Emscripten-generated JS loader file -->
+	<script src="RPY"></script>
+    <!-- load main.js -->
+</body>
+</html>
