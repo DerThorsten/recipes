@@ -50,7 +50,7 @@ pushd _build_linux
     export PKG_CONFIG_PATH=$BUILD_PREFIX/lib/pkgconfig
     export PREFIX=$BUILD_PREFIX
     export CC=gcc
-    export CXX=g++
+    export CXX=gcc
     export FC=flang
     export FCLIBS="-lflang_rt.runtime"
     export CPPFLAGS="-I$BUILD_PREFIX/include"

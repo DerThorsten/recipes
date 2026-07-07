@@ -48,6 +48,7 @@ outputs:
     # Dependencies to build R in the build environment
     - libflang-rt
     - gcc
+    - gxx
     - libiconv
     - zlib
     - bzip2
