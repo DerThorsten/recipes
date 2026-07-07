@@ -62,6 +62,8 @@ async function main() {
   const rScriptBody = `
   # R script to test the R WASM build
   print("Hello from R")
+  library(stats)
+  
   library(reticulate)
   `;
   const rArgs = ["--no-restore", "--vanilla", "-e", rScriptBody];

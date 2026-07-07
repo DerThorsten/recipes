@@ -11,8 +11,10 @@ echo "WASM_PREFIX_DIR: ${WASM_PREFIX_DIR}"
 # if prefix does not exist, create it
 if [ ! -d "${WASM_PREFIX_DIR}" ]; then
   echo "Creating WASM_PREFIX_DIR: ${WASM_PREFIX_DIR}"
-  $MAMBA_EXE create -y -p "${WASM_PREFIX_DIR}"  -c  https://repo.prefix.dev/emscripten-forge-4x -c conda-forge --platform=emscripten-wasm32 \
-  r-base r-py 
+  $MAMBA_EXE create -y -p "${WASM_PREFIX_DIR}"  \
+  -c ${THIS_DIR}/../output \
+  -c  https://repo.prefix.dev/emscripten-forge-4x -c conda-forge --platform=emscripten-wasm32 \
+  r-base r-py r-reticulate
 fi
 
 # create a deployment dir
