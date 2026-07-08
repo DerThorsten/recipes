@@ -40,12 +40,13 @@ cp ${WASM_PREFIX_DIR}/lib/R/bin/exec/RPY* ${DEPLOY_DIR}/
 
 # renmae RPY.wasm to R.wasm
 mv ${DEPLOY_DIR}/RPY.wasm ${DEPLOY_DIR}/R.wasm
+mv ${DEPLOY_DIR}/RPY ${DEPLOY_DIR}/RPY.js
 
 
 # copy the index.html file to the deployment dir
 cp ${THIS_DIR}/index.html ${DEPLOY_DIR}/
-# copy main.js to the deployment dir
-cp ${THIS_DIR}/main.js ${DEPLOY_DIR}/
+# copy worker.js to the deployment dir
+cp ${THIS_DIR}/worker.js ${DEPLOY_DIR}/
 
 
 python $THIS_DIR/tree.py ${DEPLOY_DIR}/prefix  ${DEPLOY_DIR}/prefix_content.json

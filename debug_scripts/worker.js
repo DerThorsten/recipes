@@ -1,9 +1,38 @@
-console.log("hello world");
 
 
 
 
-
+globalThis.Module = {
+    noInitialRun: true,
+    preRun: [() => {
+        
+        Module.ENV.R_HOME = '/R';
+    }],
+    print: (text) => {
+        // post message to main thread
+        postMessage({ type: 'print', message: text });
+    },
+    printErr: (text) => {
+        // post message to main thread
+        postMessage({ type: 'printErr', message: text });
+    },
+    setStatus: (text) => {
+        // post message to main thread
+        postMessage({ type: 'status', message: text });
+    },
+    locateFile: (path) => {
+        if (path.endsWith('.wasm')) return 'R.wasm';
+        return path;
+    },
+    onRuntimeInitialized: () => {
+        // post message to main thread
+        postMessage({ type: 'status', message: 'Runtime initialized' });
+        // Example: run a simple command if main is exposed.
+        main();
+        
+    }
+};
+importScripts('RPY.js');
 
 async function fetchAndPopulate(path, createdDirs) {
     const url = 'prefix/' + path;
@@ -64,7 +93,7 @@ async function main() {
   print("Hello from R")
   library(stats)
   
-  library(reticulate)
+
   `;
   const rArgs = ["--no-restore", "--vanilla", "-e", rScriptBody];
 

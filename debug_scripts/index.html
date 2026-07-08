@@ -25,38 +25,20 @@
 	<script>
         const output = document.getElementById('output');
 		const statusEl = document.getElementById('status');
-        
-		window.Module = {
-            noInitialRun: true,
-            preRun: [() => {
-                
-                Module.ENV.R_HOME = '/R';
-			}],
-			print: (text) => {
-                output.textContent += text + '\n';
-			},
-			printErr: (text) => {
-                output.textContent += '[err] ' + text + '\n';
-			},
-			setStatus: (text) => {
-                statusEl.textContent = text;
-			},
-			locateFile: (path) => {
-                if (path.endsWith('.wasm')) return 'R.wasm';
-				return path;
-			},
-			onRuntimeInitialized: () => {
-                statusEl.textContent = 'Runtime initialized';
-				// Example: run a simple command if main is exposed.
-                main();
-				
-			}
-		};
-        </script>
+        const worker = new Worker("worker.js");
 
-    <script src="main.js"></script> 
-	<!-- Emscripten-generated JS loader file -->
-	<script src="RPY"></script>
-    <!-- load main.js -->
+
+        worker.onmessage = (e) => {
+            const type = e.data.type;
+            console.log("Message from worker:", e.data, "Type:", type);
+            if (type === 'print') {
+               output.textContent += e.data.message + '\n';
+            } else if (type === 'printErr') {
+                output.textContent += e.data.message + '\n';
+            } else if (type === 'output') {
+                output.textContent += e.data.message + '\n';
+            }
+        };
+    </script>
 </body>
 </html>
