@@ -24,13 +24,16 @@ rm -rf "${DEPLOY_DIR}/prefix_content.json"
 mkdir -p "${DEPLOY_DIR}"
 
 # copy paste relevant r-files to the deployment dir and create dirs if needed
-mkdir -p ${DEPLOY_DIR}/prefix
+mkdir -p ${DEPLOY_DIR}/prefix/lib
 cp -r ${WASM_PREFIX_DIR}/lib/R ${DEPLOY_DIR}/prefix/
+
+# copy shared r libraries to the lib of the prefix dir 
+cp ${WASM_PREFIX_DIR}/lib/R/lib/*.so ${DEPLOY_DIR}/prefix/lib
 
 # copy all R shared libs to the deployment dir
 cp ${WASM_PREFIX_DIR}/lib/R/lib/*.so ${DEPLOY_DIR}/
 # copy all ordenary shared libs to the deployment dir
-cp ${WASM_PREFIX_DIR}/lib/*.so ${DEPLOY_DIR}/
+cp ${WASM_PREFIX_DIR}/lib/*.so ${DEPLOY_DIR}/prefix/lib
 
 # copy the binary to the root of the deployment next to where the html file will be
 cp ${WASM_PREFIX_DIR}/lib/R/bin/exec/RPY* ${DEPLOY_DIR}/
