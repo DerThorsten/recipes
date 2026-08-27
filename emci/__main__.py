@@ -5,7 +5,7 @@ from .playwright import changed_recipes_need_playwright
 from .schema import Recipe
 from .upload import extract_channel_from_pkg
 from .exclude_build import exclude_build
-
+from .rebuild_all import rebuild_all as rebuild_all_impl
 import sys
 import os
 import tempfile
@@ -165,6 +165,11 @@ def needs_playwright(old: str, new: str):
     else:
         print("false")
 
+
+
+@build_app.command("rebuild-all")
+def rebuild_all():
+    rebuild_all_impl()
 
 if __name__ == "__main__":
     app()
