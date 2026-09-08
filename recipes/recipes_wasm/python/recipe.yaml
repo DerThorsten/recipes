@@ -3,7 +3,7 @@ context:
   name: python
   ver2: '3.14'
   ver2nd: ${{ version | version_to_buildstring }}
-  build_number: 5
+  build_number: 6
   abi_tag: cp${{ ver2nd }}
 
 build:
@@ -180,6 +180,8 @@ outputs:
         requirements:
           build:
           - generic-testing
+
+
   - package:
       name: python-dev
       version: ${{ version }}
@@ -194,6 +196,17 @@ outputs:
         - test -f $PREFIX/lib/libpython${{ver2}}.a
         - test -f $PREFIX/lib/python${{ver2}}/enum.py
         - test -f $PREFIX/lib/python${{ver2}}/ast.py
+      - script:
+        - build_tests.sh
+        requirements:
+          build:
+          - ${{ compiler("c") }}
+          - make
+          - python=${{ver2}}
+        files:
+          recipe:
+          - build_tests.sh
+          - test_main.c
 
     
 about:
