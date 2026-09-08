@@ -117,10 +117,6 @@ cp ${RECIPE_DIR}/patches/emscripten_syscalls.c $BUILD/Python/
 ln -sf "${BUILD_PREFIX}/bin/python${PY_VERSION}" "${BUILD_PREFIX}/bin/python.js"
 ln -sf "${BUILD_PREFIX}/bin/python${PY_VERSION}" "${BUILD_PREFIX}/bin/python.mjs"
 
-# Empty emsdk_env.sh so nothing accidental is sourced
-echo "" > "${EMSCRIPTEN_FORGE_EMSDK_DIR}/emsdk_env.sh"
-chmod +x "${EMSCRIPTEN_FORGE_EMSDK_DIR}/emsdk_env.sh"
-
 # Recipe-provided files (patches are already applied by the recipe)
 cp "${RECIPE_DIR}/Setup.local" .
 cp "${RECIPE_DIR}/adjust_sysconfig.py" .
@@ -166,11 +162,6 @@ cp Setup.local "${BUILD}/Modules/"
     --prefix="${PREFIX}" \
     --with-build-python="${BUILD_PREFIX}/bin/python"
 
-  # Disable HACL SIMD (x86-only) so portable Blake2 is used on wasm
-  sed -i \
-    -e 's/^LIBHACL_BLAKE2_SIMD128_OBJS=.*/LIBHACL_BLAKE2_SIMD128_OBJS=/' \
-    -e 's/^LIBHACL_BLAKE2_SIMD256_OBJS=.*/LIBHACL_BLAKE2_SIMD256_OBJS=/' \
-    Makefile
 )
 
 # ---------------------------------------------------------------------------
@@ -181,16 +172,6 @@ cp Setup.local "${BUILD}/Modules/"
 
   # Clear out libinstall deps (we install what we need explicitly)
   sed -i -e 's/libinstall:.*/libinstall:/' Makefile
-
-  # Disable HACL SIMD again (configure may have rewritten the lines)
-  sed -i \
-    -e 's/^LIBHACL_BLAKE2_SIMD128_OBJS=.*/LIBHACL_BLAKE2_SIMD128_OBJS=/' \
-    -e 's/^LIBHACL_BLAKE2_SIMD256_OBJS=.*/LIBHACL_BLAKE2_SIMD256_OBJS=/' \
-    Makefile
-
-  # Inject libmpdec / libexpat / libhacl_sha2 objects into libpython so they
-  # do not need to be linked separately later.
-  sed -i '/MODOBJS=/s/$/ $(LIBMPDEC_OBJS) $(LIBEXPAT_OBJS) $(LIBHACL_SHA2_OBJS)/' Makefile
 )
 
 # ---------------------------------------------------------------------------
@@ -297,9 +278,6 @@ for module in "${BUILD}/Modules"/*; do
   cp "${module}"/*.a "${PREFIX}/lib/" 2>/dev/null || true
 done
 
-# Explicit copies (libmpdec / libexpat)
-cp "${BUILD}/Modules/_decimal/libmpdec/libmpdec.a" "${PREFIX}/lib/"
-cp "${BUILD}/Modules/expat/libexpat.a" "${PREFIX}/lib/"
 
 # ---------------------------------------------------------------------------
 # Stub commands (cross build; no native interpreter on the target)
