@@ -181,7 +181,7 @@ from .migrate import build_tentative as build_tentative_impl
 @migrate.command()
 def build_tentative(timeout: Optional[int] = None, 
                     wildcards: Optional[str] = None,
-                    wildcards_ignore: Optional[str] = "arrow,thrift"
+                    wildcards_ignore: Optional[str] = "arrow,thrift,r-factominer"
     ):
     # split wildcards by comma if provided
     if wildcards is not None:
