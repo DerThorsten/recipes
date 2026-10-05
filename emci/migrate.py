@@ -329,7 +329,7 @@ def build_tentative(output_dir=None,
         temp_dir = Path(temp_dir)
         if output_dir is None:
             output_dir = temp_dir / "outdir"
-        output_dir.mkdir(parents=True)
+        output_dir.mkdir(parents=True, exist_ok=True)
 
         filtered_to_migrate_dir = temp_dir / "filtered_to_migrate"
         filtered_to_migrate_dir.mkdir(parents=True)
