@@ -196,7 +196,9 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
                 recipe_hash = get_recipe_hash_build_pkg(pkg_file)
                 if recipe_hash in pkg_to_recipe_dir:
                     successful_builds.append(pkg_to_recipe_dir[recipe_hash])
-    
+    if not successful_builds:
+        print("No successful builds.")
+        return
 
     print(f"Successfully built recipes: {successful_builds}")
     # new branch name 
