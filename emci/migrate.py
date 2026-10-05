@@ -144,8 +144,10 @@ def pkg_list_to_branch_name(pkg_list, max_branch_name_length=255):
         name = name[:max_branch_name_length]
     return name
 
+PR_TITLE_PREFIX = "[6x-Migration]"
+
 def pkg_list_to_pr_title(pkg_list, max_title_length=100):
-    title = "Migrate " + ", ".join(pkg_list)
+    title = PR_TITLE_PREFIX + " " + ", ".join(pkg_list)
     if len(title) > max_title_length:
         title = title[:max_title_length]
     return title
@@ -174,8 +176,8 @@ def get_list_of_already_migrating_recipes():
     already_migrating = []
     for pr in result:
         title = pr.get("title", "")
-        print("Processing PR title:", title)
-        if title.startswith("Migrate "):
+        # print("Processing PR title:", title)
+        if title.startswith(PR_TITLE_PREFIX):
             body = pr.get("body", "")
             already_migrating.extend(pr_body_to_pkg_list(body))
     return set(already_migrating)
