@@ -285,6 +285,8 @@ def copy_selected_recipes(to_migrate_dir, already_migrating,  wildcards, wildcar
     if not output_dir.exists():
         output_dir.mkdir(parents=True)
 
+    print("wildcards to ignore:", wildcards_ignore)
+    print("wildcards to include:", wildcards)
     for recipe_dir in to_migrate_dir.iterdir():
         if recipe_dir.is_dir() and (recipe_dir / "recipe.yaml").exists():
             # dir_name
