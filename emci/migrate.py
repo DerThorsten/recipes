@@ -269,21 +269,19 @@ def build_tentative(output_dir,
     """
     entry point for tentative building
     """
-    output_dir = Path(output_dir)
     if wildcards is None:
         wildcards = ['*']
     if wildcards_ignore is None:
         wildcards_ignore = []
 
 
-    # sanity checks
-    if not output_dir.exists():
-        output_dir.mkdir(parents=True)
 
 
     # create temp dir
     with TemporaryDirectory() as temp_dir:
         temp_dir = Path(temp_dir)
+        output_dir = temp_dir / "output"
+        output_dir.mkdir(parents=True)
 
         filtered_to_migrate_dir = temp_dir / "filtered_to_migrate"
         filtered_to_migrate_dir.mkdir(parents=True)
