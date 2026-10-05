@@ -183,14 +183,17 @@ def build_tentative(
     output_dir: Optional[Path] = None,
     timeout: Optional[int] = None, 
     wildcards: Optional[str] = None,
-    wildcards_ignore: Optional[str] = "arrow,thrift,r-factominer"
+    wildcards_ignore: Optional[str] = None
 ):
     # split wildcards by comma if provided
     if wildcards is not None:
         wildcards = wildcards.split(",")
 
+    wildcards_base = ["arrow", "thrift", "r-factominer"]
     if wildcards_ignore is not None:
-        wildcards_ignore = wildcards_ignore.split(",")
+        wildcards_ignore = wildcards_ignore.split(",") + wildcards_base
+    else:
+        wildcards_ignore = wildcards_base
 
     build_tentative_impl(output_dir=output_dir, timeout=timeout, wildcards=wildcards, wildcards_ignore=wildcards_ignore)
 
