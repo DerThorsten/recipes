@@ -182,6 +182,7 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
 
             # where the original recipe is located
             src_dir_original = TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR / recipe_dir
+            
             dst_dir = RECIPES_EMSCRIPTEN_DIR / recipe_dir
 
             
@@ -189,7 +190,7 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
                 raise RuntimeError(f"Destination directory {dst_dir} already exists")
             
             shutil.copytree(src_dir_modified, dst_dir)
-            print(f"Copied {src_dir} to {dst_dir}") 
+            print(f"Copied {src_dir_modified} to {dst_dir}") 
 
 
             # delete the old file via git

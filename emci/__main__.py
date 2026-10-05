@@ -179,7 +179,7 @@ app.add_typer(migrate, name="migrate")
 from .migrate import build_tentative as build_tentative_impl
 
 @migrate.command()
-def build_tentative(target_dir: str, timeout: Optional[int] = None, 
+def build_tentative(timeout: Optional[int] = None, 
                     wildcards: Optional[str] = None,
                     wildcards_ignore: Optional[str] = "arrow,thrift"
     ):
@@ -190,7 +190,7 @@ def build_tentative(target_dir: str, timeout: Optional[int] = None,
     if wildcards_ignore is not None:
         wildcards_ignore = wildcards_ignore.split(",")
 
-    build_tentative_impl(target_dir, timeout=timeout, wildcards=wildcards, wildcards_ignore=wildcards_ignore)
+    build_tentative_impl( timeout=timeout, wildcards=wildcards, wildcards_ignore=wildcards_ignore)
 
 
 
