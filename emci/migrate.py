@@ -273,8 +273,7 @@ def copy_selected_recipes(to_migrate_dir, wildcards, wildcards_ignore, recipe_tr
 
 
 
-@contextlib.contextmanager
-def 
+
     
 def build_tentative(output_dir, 
                     target_platform='emscripten-wasm32', 
