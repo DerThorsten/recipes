@@ -138,7 +138,7 @@ def get_github_user_ctx(use_bot):
 
 
 
-def pkg_list_to_branch_name(pkg_list, max_branch_name_length=255):
+def pkg_list_to_branch_name(pkg_list, max_branch_name_length=100):
     name =  "migrate_6x_" + "_".join(pkg_list)
     if len(name) > max_branch_name_length:
         name = name[:max_branch_name_length]
@@ -185,7 +185,7 @@ def get_list_of_already_migrating_recipes():
     
 def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, pkg_to_recipe_dir):
     # check which recipes were successfully built
-    successful_builds = []
+    successful_builds = set()
 
     # iterate over all pkgs in outputdir/{target-platform}
     target_output_dir = output_dir / target_platform
@@ -195,10 +195,11 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
             if pkg_file.is_file() and str(pkg_file).endswith(".tar.bz2"):
                 recipe_hash = get_recipe_hash_build_pkg(pkg_file)
                 if recipe_hash in pkg_to_recipe_dir:
-                    successful_builds.append(pkg_to_recipe_dir[recipe_hash])
+                    successful_builds.add(pkg_to_recipe_dir[recipe_hash])
     if not successful_builds:
         print("No successful builds.")
         return
+    successful_builds = list(successful_builds)
 
     print(f"Successfully built recipes: {successful_builds}")
     # new branch name 
