@@ -163,7 +163,7 @@ def pr_body_to_pkg_list(pr_body):
 def get_list_of_already_migrating_recipes():
     command = [
             "gh", "pr", "list",
-            "--author", "emscripten-forge-bot",
+            # "--author", "emscripten-forge-bot",
             "--base", "emscripten-6x",
             "--json", "number,title,body",
             "--limit", "200" # default is only 30
