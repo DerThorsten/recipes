@@ -149,7 +149,7 @@ def pkg_list_to_pr_title(pkg_list, max_title_length=100):
         title = title[:max_title_length]
     return title
 
-def post_tentative_build( output_dir, target_platform, pkg_to_recipe_dir):
+def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, pkg_to_recipe_dir):
     # check which recipes were successfully built
     successful_builds = []
 
@@ -171,24 +171,29 @@ def post_tentative_build( output_dir, target_platform, pkg_to_recipe_dir):
 
 
 
-        # move build recipes from TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR
+        # move build recipes from filtered_to_migrate_dir
         # to the actual recipe dir RECIPES_EMSCRIPTEN_DIR
-        # copy TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR/<RECIPE> to RECIPES_EMSCRIPTEN_DIR/<RECIPE> 
+        # copy filtered_to_migrate_dir/<RECIPE> to RECIPES_EMSCRIPTEN_DIR/<RECIPE> 
         for recipe_dir in successful_builds:
-            src_dir = TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR / recipe_dir
+
+            # this is the recipe where we already applied some transformations
+            # (ie python in host ist renamed to python-dev, and similar changes)
+            src_dir_modified = filtered_to_migrate_dir / recipe_dir
+
+            # where the original recipe is located
+            src_dir_original = TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR / recipe_dir
             dst_dir = RECIPES_EMSCRIPTEN_DIR / recipe_dir
-            if not src_dir.exists():
-                raise RuntimeError(f"Source directory {src_dir} does not exist")
+
             
             if  dst_dir.exists():
                 raise RuntimeError(f"Destination directory {dst_dir} already exists")
             
-            shutil.copytree(src_dir, dst_dir)
+            shutil.copytree(src_dir_modified, dst_dir)
             print(f"Copied {src_dir} to {dst_dir}") 
 
 
             # delete the old file via git
-            subprocess.run(["git", "rm", "-r", str(src_dir)], check=True)
+            subprocess.run(["git", "rm", "-r", str(src_dir_original)], check=True)
 
             # call git add to add RECIPES_EMSCRIPTEN_DIR / recipe_dir 
             subprocess.run(["git", "add", str(dst_dir)], check=True)
@@ -269,6 +274,7 @@ def build_tentative(output_dir,
     """
     entry point for tentative building
     """
+
     if wildcards is None:
         wildcards = ['*']
     if wildcards_ignore is None:
@@ -311,7 +317,8 @@ def build_tentative(output_dir,
 
 
                 # after the build, process the results
-                post_tentative_build(output_dir=output_dir, 
+                post_tentative_build(filtered_to_migrate_dir=filtered_to_migrate_dir,
+                                    output_dir=output_dir, 
                                     target_platform=target_platform, 
                                     pkg_to_recipe_dir=pkg_to_recipe_dir)
 
