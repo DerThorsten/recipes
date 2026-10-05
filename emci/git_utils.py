@@ -62,10 +62,14 @@ def get_current_branch_name():
 
 
 @contextmanager
-def git_branch_ctx(new_branch_name, stash_current=True,  auto_delete=True):
+def git_branch_ctx(new_branch_name, stash_current=True,  auto_delete=None, new_branch=True):
 
     old_branch_name = get_current_branch_name()
-
+    if auto_delete is None:
+        if new_branch:
+            auto_delete = True
+        else:
+            auto_delete = False
 
     #  stash current changes and check return code
     stashed_successfully = False
@@ -75,7 +79,10 @@ def git_branch_ctx(new_branch_name, stash_current=True,  auto_delete=True):
         if out.returncode == 0:
             stashed_successfully = True
 
-    subprocess.check_output(['git', 'checkout', '-b', new_branch_name])
+    if new_branch:
+        subprocess.check_output(['git', 'checkout', '-b', new_branch_name])
+    else:
+        subprocess.check_output(['git', 'checkout', new_branch_name])
 
 
     try:
