@@ -179,10 +179,12 @@ app.add_typer(migrate, name="migrate")
 from .migrate import build_tentative as build_tentative_impl
 
 @migrate.command()
-def build_tentative(timeout: Optional[int] = None, 
-                    wildcards: Optional[str] = None,
-                    wildcards_ignore: Optional[str] = "arrow,thrift,r-factominer"
-    ):
+def build_tentative(
+    outdir: Optional[Path] = None,
+    timeout: Optional[int] = None, 
+    wildcards: Optional[str] = None,
+    wildcards_ignore: Optional[str] = "arrow,thrift,r-factominer"
+):
     # split wildcards by comma if provided
     if wildcards is not None:
         wildcards = wildcards.split(",")
@@ -190,7 +192,7 @@ def build_tentative(timeout: Optional[int] = None,
     if wildcards_ignore is not None:
         wildcards_ignore = wildcards_ignore.split(",")
 
-    build_tentative_impl( timeout=timeout, wildcards=wildcards, wildcards_ignore=wildcards_ignore)
+    build_tentative_impl(outdir=outdir, timeout=timeout, wildcards=wildcards, wildcards_ignore=wildcards_ignore)
 
 
 

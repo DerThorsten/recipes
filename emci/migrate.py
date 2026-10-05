@@ -306,7 +306,8 @@ def copy_selected_recipes(to_migrate_dir, already_migrating,  wildcards, wildcar
 
 
     
-def build_tentative(target_platform='emscripten-wasm32', 
+def build_tentative(output_dir=None,
+                    target_platform='emscripten-wasm32', 
                     timeout=None, 
                     wildcards=None,
                     wildcards_ignore=None):
@@ -325,7 +326,8 @@ def build_tentative(target_platform='emscripten-wasm32',
     # create temp dir
     with TemporaryDirectory() as temp_dir:
         temp_dir = Path(temp_dir)
-        output_dir = temp_dir / "output"
+        if output_dir is None:
+            output_dir = temp_dir / "outdir"
         output_dir.mkdir(parents=True)
 
         filtered_to_migrate_dir = temp_dir / "filtered_to_migrate"

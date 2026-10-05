@@ -2,10 +2,13 @@ context:
   name: cross-r-base_emscripten-wasm32
   version: 4.5.2
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 package:
   name: ${{ name }}
   version: ${{ version }}
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -35,6 +38,9 @@ outputs:
   #     - etc/conda/activate.d/activate_z-${{ name }}.sh
   #     - etc/conda/deactivate.d/deactivate_z-${{ name }}.sh
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
