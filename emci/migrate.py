@@ -170,6 +170,7 @@ def get_list_of_already_migrating_recipes():
         ]
     result = subprocess.check_output(command).decode()
     result = json.loads(result)
+    print("Fetched PRs:", result)
     already_migrating = []
     for pr in result:
         title = pr.get("title", "")
