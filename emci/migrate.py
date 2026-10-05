@@ -13,6 +13,7 @@ import shutil
 from ruamel.yaml import YAML
 from .constants import RECIPES_EMSCRIPTEN_DIR, TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR
 import contextlib
+import json
 from .git_utils import (
     bot_github_user_ctx, 
     git_branch_ctx, 
@@ -149,6 +150,35 @@ def pkg_list_to_pr_title(pkg_list, max_title_length=100):
         title = title[:max_title_length]
     return title
 
+def generate_pr_body(successful_builds):
+    return "Migrated recipes:\n" + "\n".join(
+        f"- {recipe}" for recipe in successful_builds
+    )
+def pr_body_to_pkg_list(pr_body):
+    lines = pr_body.splitlines()
+    return [line[2:] for line in lines if line.startswith("- ")]
+
+
+
+def get_list_of_already_migrating_recipes():
+    command = [
+            "gh", "pr", "list",
+            "--author", "emscripten-forge-bot",
+            "--base", "emscripten-6x",
+            "--json", "number,title,body",
+            "--limit", "200" # default is only 30
+        ]
+    result = subprocess.check_output(command).decode()
+    result = json.loads(result)
+    already_migrating = []
+    for pr in result:
+        title = pr.get("title", "")
+        if title.startswith("Migrate "):
+            body = pr.get("body", "")
+            already_migrating.extend(pr_body_to_pkg_list(body))
+    return set(already_migrating)
+
+    
 def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, pkg_to_recipe_dir):
     # check which recipes were successfully built
     successful_builds = []
@@ -208,9 +238,7 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
 
         pr_title = pkg_list_to_pr_title(successful_builds)
 
-        pr_body = "Migrated recipes:\n" + "\n".join(
-            f"- {recipe}" for recipe in successful_builds
-        )
+        pr_body = generate_pr_body(successful_builds)
 
         # get current user
         if ON_GITHUB_ACTIONS:
@@ -232,6 +260,8 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
             
 
 
+
+
 def build_pkg_to_recipe_dir(to_migrate_dir):
     pkg_to_recipe_dir = {}
     for recipe_dir in to_migrate_dir.iterdir():
@@ -244,7 +274,7 @@ def build_pkg_to_recipe_dir(to_migrate_dir):
     return pkg_to_recipe_dir
 
 
-def copy_selected_recipes(to_migrate_dir, wildcards, wildcards_ignore, recipe_transformations, output_dir):
+def copy_selected_recipes(to_migrate_dir, already_migrating,  wildcards, wildcards_ignore, recipe_transformations, output_dir):
     to_migrate_dir = Path(to_migrate_dir)
     output_dir = Path(output_dir)
 
@@ -260,9 +290,10 @@ def copy_selected_recipes(to_migrate_dir, wildcards, wildcards_ignore, recipe_tr
                 if wildcards_ignore is not None and any(fnmatch.fnmatch(dir_name, wc) for wc in wildcards_ignore):
                     continue
 
+                if dir_name in already_migrating:
+                    continue
+
                 migrate_recipe(recipe_dir, output_dir)
-
-
 
 
 
@@ -291,7 +322,10 @@ def build_tentative(target_platform='emscripten-wasm32',
 
         filtered_to_migrate_dir = temp_dir / "filtered_to_migrate"
         filtered_to_migrate_dir.mkdir(parents=True)
-        copy_selected_recipes(TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR, wildcards, wildcards_ignore, recipe_transformations=[], output_dir=filtered_to_migrate_dir)
+        
+        already_migrating = get_list_of_already_migrating_recipes()
+        print("Already migrating recipes:", already_migrating)
+        copy_selected_recipes(TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR, already_migrating, wildcards, wildcards_ignore, recipe_transformations=[], output_dir=filtered_to_migrate_dir)
 
 
         # map recipe.yaml content to directory name 
