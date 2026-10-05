@@ -182,7 +182,7 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
 
             # where the original recipe is located
             src_dir_original = TO_MIGRATE_RECIPES_EMSCRIPTEN_DIR / recipe_dir
-            
+
             dst_dir = RECIPES_EMSCRIPTEN_DIR / recipe_dir
 
             
@@ -267,8 +267,7 @@ def copy_selected_recipes(to_migrate_dir, wildcards, wildcards_ignore, recipe_tr
 
 
     
-def build_tentative(output_dir, 
-                    target_platform='emscripten-wasm32', 
+def build_tentative(target_platform='emscripten-wasm32', 
                     timeout=None, 
                     wildcards=None,
                     wildcards_ignore=None):
