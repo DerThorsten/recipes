@@ -310,7 +310,7 @@ def build_tentative(output_dir,
         pkg_to_recipe_dir = build_pkg_to_recipe_dir(filtered_to_migrate_dir)
 
         # build all pkgs
-        if 0:
+        if 1:
             build_with_rattler_wrapper(recipes_dir=filtered_to_migrate_dir, output_dir=output_dir, 
                             target_platform=target_platform, skip_existing="local", 
                             timeout=timeout)
@@ -324,23 +324,6 @@ def build_tentative(output_dir,
             # we want to make th changes ontop of pr_target_branch
             # but after the script we want to switch back to whatever branch we were on before
             with git_branch_ctx(pr_target_branch, stash_current=True, auto_delete=False, new_branch=False):
-
-
-
-                # current_branch_name = get_current_branch_name()
-                # if current_branch_name == pr_target_branch:
-                #     print(f"Already on target branch {pr_target_branch}")
-                # else:
-                #     print(f"swichting from {current_branch_name} to {pr_target_branch}")
-                #     # switch to the target branch
-                #     subprocess.run(['git', 'stash'], check=False)
-                #     print(f"fetch {pr_target_branch}")
-                #     subprocess.check_output(['git', 'fetch', 'origin', pr_target_branch])
-                #     print(f"checkout {pr_target_branch}")
-                #     subprocess.check_output(['git', 'checkout', pr_target_branch])
-                #     print("checkout done")
-
-
 
 
                 # after the build, process the results
