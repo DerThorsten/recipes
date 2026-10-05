@@ -170,10 +170,11 @@ def get_list_of_already_migrating_recipes():
         ]
     result = subprocess.check_output(command).decode()
     result = json.loads(result)
-    print("Fetched PRs:", result)
+    # print("Fetched PRs:", result)
     already_migrating = []
     for pr in result:
         title = pr.get("title", "")
+        print("Processing PR title:", title)
         if title.startswith("Migrate "):
             body = pr.get("body", "")
             already_migrating.extend(pr_body_to_pkg_list(body))
