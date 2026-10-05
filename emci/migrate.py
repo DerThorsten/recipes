@@ -110,20 +110,6 @@ def build_with_rattler_wrapper(*args, **kwargs):
     """
     try:
         ret = build_with_rattler(*args, **kwargs,  format='tar-bz2', log_style='simple', continue_on_failure=True)
-        # parse the JSON output from the build log if needed
-        print(f"Build command output:\n{ret.stdout}")
-        import json
-        import pprint
-        try:
-            build_log = json.loads(ret.stdout)
-        except json.JSONDecodeError as e:
-            build_log = None
-            print(f"Failed to parse build log as JSON: {e}")
-        if build_log is not None:
-            pprint.pprint(build_log)
-
-        
-        
         return ret
     except subprocess.TimeoutExpired:
         print("Build timed out, continuing with other recipes...")
