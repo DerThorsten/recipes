@@ -2,6 +2,7 @@ import subprocess
 import os
 import json
 from contextlib import contextmanager
+import sys
 
 def find_files_with_changes(old, new):
     # `origin/main...HEAD` shows the unique files changed in HEAD
@@ -93,11 +94,13 @@ def git_branch_ctx(new_branch_name, stash_current=True,  auto_delete=None, new_b
         # unstash changes
         if stash_current and stashed_successfully:
             print("Popping stashed changes...")
-            out = subprocess.run(['git', 'stash', 'pop'], check=False)
+            out = subprocess.run(['git', 'stash', 'pop'], check=False,
+                                  stdout=sys.stdout,
+                                  stderr=sys.stderr,
+                                 )
             if out.returncode != 0:
                 print("Warning: git stash pop failed")
-                print("stdout:", out.stdout)
-                print("stderr:", out.stderr)
+
 
 
         if auto_delete:
