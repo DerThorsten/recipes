@@ -93,9 +93,11 @@ def git_branch_ctx(new_branch_name, stash_current=True,  auto_delete=None, new_b
         # unstash changes
         if stash_current and stashed_successfully:
             print("Popping stashed changes...")
-            out = subprocess.run(['git', 'stash', 'pop'], check=False, shell=True)
+            out = subprocess.run(['git', 'stash', 'pop'], check=False)
             if out.returncode != 0:
                 print("Warning: git stash pop failed")
+                print("stdout:", out.stdout)
+                print("stderr:", out.stderr)
 
 
         if auto_delete:
