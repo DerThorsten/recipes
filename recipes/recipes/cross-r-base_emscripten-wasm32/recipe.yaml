@@ -3,10 +3,13 @@ context:
   version: 4.5.2
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 package:
   name: ${{ name }}
   version: ${{ version }}
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -39,6 +42,9 @@ outputs:
   #     - etc/conda/deactivate.d/deactivate_z-${{ name }}.sh
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

@@ -41,7 +41,6 @@ def iter_requirements(output):
 def replace_in_list(lst, old, new):
     return [new if x == old else x for x in lst]
 
-
 def migrate_recipe(recipe_dir, output_dir):
     recipe_dir = Path(recipe_dir)
     output_dir = Path(output_dir)
@@ -67,38 +66,14 @@ def migrate_recipe(recipe_dir, output_dir):
         YAML().dump(recipe, file)
 
     
-def hash_recipe_content(recipe_content):
-    """
-    Computes the SHA-256 hash of the given recipe content.
 
-    Args:
-        recipe_content (str): Content of the recipe.yaml file.
-
-    Returns:
-        str: SHA-256 hash of the recipe content.
-    """         
-    return sha256(recipe_content.encode("utf-8")).hexdigest()
-
-
-def get_recipe_hash_build_pkg(pkg_path):
-    """
-    Extracts the recipe.yaml file from a built package and computes its hash.
-
-    Args:
-        pkg_path (str or Path): Path to the built package (.tar.bz2 file).
-
-    Returns:
-        str: SHA-256 hash of the recipe.yaml content.
-    """
+@contextlib.contextmanager
+def extract_pkg(pkg_path):
     with TemporaryDirectory() as temp_dir:
         subprocess.run(["tar", "-xzf", str(pkg_path), "-C", temp_dir], check=True)
-        # read the recipe.yaml file from the extracted contents
-        conda_meta_dir = Path(temp_dir) / "info" / "recipe"/"recipe.yaml"
-        if not conda_meta_dir.exists():
-            raise FileNotFoundError(f"Recipe file not found in package {pkg_path}")
-        # read the recipe.yaml file
-        with open(conda_meta_dir, "r") as f:
-            return hash_recipe_content(f.read())
+        yield Path(temp_dir)
+
+
 
 
 def build_with_rattler_wrapper(*args, **kwargs):
@@ -182,20 +157,51 @@ def get_list_of_already_migrating_recipes():
             already_migrating.extend(pr_body_to_pkg_list(body))
     return set(already_migrating)
 
-    
+
+def cluster_build_recipes(successful_builds, output_dir, target_platform, pkg_to_recipe_dir):
+    pass
+
+def iterate_pkg_files(path):
+    path = Path(path)
+    if not path.exists():
+        return
+    for pkg_file in path.iterdir():
+        if pkg_file.is_file() and str(pkg_file).endswith(".tar.bz2"):
+            yield pkg_file
+
+
+# this is just an approximation
+# to figure out which recipes need to go in
+# the same PR.
+# here we just combine the **direct** host and run dependencies
+# of all outputs (and tests) into a single list 
+def get_recipe_pseudo_dependencies(recipe_dir):
+    # open rendered recipe.yaml and extract direct host and run dependencies
+    rendered_recipe_yaml = (Path(recipe_dir) / "info" / "recipe" / "rendered_recipe.yaml").read_text()
+    assert False
+
+def extract_outputs(recipe_dir):
+    rendered_recipe_yaml = (Path(recipe_dir) / "info" / "recipe" / "rendered_recipe.yaml").read_text()
+    # parse the rendered_recipe_yaml and extract outputs
+    # this is just a placeholder, actual implementation needed
+    assert False
+    return []
+
+
+
 def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, pkg_to_recipe_dir):
     # check which recipes were successfully built
     successful_builds = set()
 
     # iterate over all pkgs in outputdir/{target-platform}
     target_output_dir = output_dir / target_platform
-    if target_output_dir.exists():
-        for pkg_file in target_output_dir.iterdir():
+    for pkg_file in iterate_pkg_files(target_output_dir):
+        with extract_pkg(pkg_file) as extract_pkg_dir:
+            recipe_yaml = (Path(extract_pkg_dir) / "info" / "recipe"/"recipe.yaml").read_text()
+            recipe_hash = sha256(recipe_yaml.encode("utf-8")).hexdigest()
+            if recipe_hash in pkg_to_recipe_dir:
+                successful_builds.add(pkg_to_recipe_dir[recipe_hash])
 
-            if pkg_file.is_file() and str(pkg_file).endswith(".tar.bz2"):
-                recipe_hash = get_recipe_hash_build_pkg(pkg_file)
-                if recipe_hash in pkg_to_recipe_dir:
-                    successful_builds.add(pkg_to_recipe_dir[recipe_hash])
     if not successful_builds:
         print("No successful builds.")
         return
@@ -227,16 +233,10 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
                 raise RuntimeError(f"Destination directory {dst_dir} already exists")
             
             shutil.copytree(src_dir_modified, dst_dir)
-            print(f"Copied {src_dir_modified} to {dst_dir}") 
-
 
             # delete the old file via git
             subprocess.run(["git", "rm", "-r", str(src_dir_original)], check=True)
-
-            # call git add to add RECIPES_EMSCRIPTEN_DIR / recipe_dir 
             subprocess.run(["git", "add", str(dst_dir)], check=True)
-
-            # make commit for that recipe
             subprocess.run(["git", "commit", "-m", f"Migrate recipe {recipe_dir}"], check=True)
 
         # push the changes to the remote(with force if necessary)
@@ -263,7 +263,7 @@ def post_tentative_build( filtered_to_migrate_dir, output_dir, target_platform, 
         ]
 
         # call gh to create a PR
-        subprocess.check_call(args, cwd=os.getcwd())
+        #subprocess.check_call(args, cwd=os.getcwd())
             
 
 
@@ -275,8 +275,7 @@ def build_pkg_to_recipe_dir(to_migrate_dir):
         if recipe_dir.is_dir() and (recipe_dir / "recipe.yaml").exists():
             # load the recipe.yaml content
             recipe_content = (recipe_dir / "recipe.yaml").read_text()
-            # compute hash
-            recipe_hash = hash_recipe_content(recipe_content)
+            recipe_hash = sha256(recipe_content.encode("utf-8")).hexdigest()
             pkg_to_recipe_dir[recipe_hash] = recipe_dir.name
     return pkg_to_recipe_dir
 
