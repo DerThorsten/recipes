@@ -222,6 +222,8 @@ clang-interpreter-static:
   - 23.1
 clangdev-static:
   - 23.1
+cmr-static:
+  - '1.4'
 cmake:
   - 4.4
 cocoalib-static:
@@ -376,6 +378,8 @@ hdf5:
   - 1.14.6
 howardhinnant_date-static:
    - 3.0
+iceberg-cpp-static:
+  - '0.2'
 icu:
   - '77'
 icu-static:
@@ -414,12 +418,16 @@ krb5:
   - '1.19'
 lcms2-static:
   - '2.19'
+libaom-static:
+  - '3.14'
 libarchive:
   - 3.8
 libatomic_ops-static:
   - 7.1
 libblitz:
   - 1.0.2
+libbrial-static:
+  - '1.2'
 libcint:
   - '5.1'
 libclang:
@@ -663,6 +671,8 @@ openjpeg-static:
   - '2.5.4'
 openmpi:
   - 4
+openexr-static:
+  - '3.4'
 openssl:
   - 3.5
 libopenssl-static:
